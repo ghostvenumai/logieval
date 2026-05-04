@@ -2,6 +2,23 @@
 
 LLM evaluation and observability platform for logistics AI. Test, score, and compare prompt versions against real customer service scenarios using a multi-agent Claude judge.
 
+## Screenshots
+
+![Dashboard](docs/screenshots/01-dashboard.png)
+*Dashboard — overview of all evaluations with scores and progress*
+
+![Prompts](docs/screenshots/02-prompts.png)
+*Prompt versioning — full history, side-by-side version comparison*
+
+![Datasets](docs/screenshots/03-datasets.png)
+*Dataset management — test cases with input variables and expected outputs*
+
+![Evaluations](docs/screenshots/04-evaluations.png)
+*Evaluation results — per-test-case scores across all three judge dimensions*
+
+![Auto-Improve](docs/screenshots/05-auto-improve.png)
+*Auto-Improve Agent — analyzes weak spots and proposes an improved prompt*
+
 ## What it does
 
 LogiEval helps teams evaluate LLM-powered logistics assistants. You write prompts, upload test cases, run evaluations, and get structured scores across three logistics-specific dimensions — all through a clean web UI with live progress streaming.
