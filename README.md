@@ -1,168 +1,170 @@
 # LogiEval
 
-LLM evaluation and observability platform for logistics AI. Test, score, and compare prompt versions against real customer service scenarios using a multi-agent Claude judge.
+LLM-Evaluierungs- und Observability-Plattform für Logistik-KI. Teste, bewerte und vergleiche Prompt-Versionen anhand echter Kundenservice-Szenarien mit einem Multi-Agenten-Claude-Bewerter.
 
 ## Screenshots
 
 ![Dashboard](docs/screenshots/01-dashboard.png)
-*Dashboard — overview of all evaluations with scores and progress*
+*Dashboard — Übersicht aller Evaluierungen mit Scores und Fortschritt*
 
 ![Prompts](docs/screenshots/02-prompts.png)
-*Prompt versioning — full history, side-by-side version comparison*
+*Prompt-Versionierung — vollständige Historie, Versionsvergleich nebeneinander*
 
-![Datasets](docs/screenshots/03-datasets.png)
-*Dataset management — test cases with input variables and expected outputs*
+![Datensätze](docs/screenshots/03-datasets.png)
+*Datensatz-Verwaltung — Testfälle mit Eingabe-Variablen und erwarteten Ausgaben*
 
-![Evaluations](docs/screenshots/04-evaluations.png)
-*Evaluation results — per-test-case scores across all three judge dimensions*
+![Evaluierungen](docs/screenshots/04-evaluations.png)
+*Evaluierungsergebnisse — testfallgenaue Scores über alle drei Bewertungsdimensionen*
 
-![Auto-Improve](docs/screenshots/05-auto-improve.png)
-*Auto-Improve Agent — analyzes weak spots and proposes an improved prompt*
+![Auto-Verbessern](docs/screenshots/05-auto-improve.png)
+*Auto-Verbesserungs-Agent — analysiert Schwachstellen und schlägt einen verbesserten Prompt vor*
 
-## What it does
+## Was es macht
 
-LogiEval helps teams evaluate LLM-powered logistics assistants. You write prompts, upload test cases, run evaluations, and get structured scores across three logistics-specific dimensions — all through a clean web UI with live progress streaming.
+LogiEval hilft Teams dabei, KI-gestützte Logistik-Assistenten zu evaluieren. Du schreibst Prompts, lädst Testfälle hoch, startest Evaluierungen und erhältst strukturierte Scores in drei logistikspezifischen Dimensionen — alles über eine übersichtliche Web-Oberfläche mit Live-Fortschrittsanzeige.
 
-**Multi-agent scoring:** Each test case is evaluated by three specialized Claude judges in parallel:
+**Multi-Agenten-Bewertung:** Jeder Testfall wird von drei spezialisierten Claude-Bewertern parallel ausgewertet:
 
-| Dimension | Weight | What it checks |
+| Dimension | Gewichtung | Was bewertet wird |
 |---|---|---|
-| Accuracy | 40% | Factual correctness, no hallucinations |
-| Helpfulness | 35% | Does it actually solve the customer's problem? |
-| Logistics Expertise | 25% | Correct use of domain terms, SLAs, Incoterms, freight processes |
+| Genauigkeit | 40 % | Faktentreue, keine Halluzinationen |
+| Hilfsbereitschaft | 35 % | Löst die Antwort das Problem des Kunden wirklich? |
+| Logistik-Expertise | 25 % | Korrekte Fachbegriffe, realistische Prozesse, Incoterms, SLAs |
 
-## Features
+## Funktionen
 
-- **Prompt versioning** — every edit creates a new version, old versions stay intact
-- **Dataset management** — upload JSON test cases with input variables and expected outputs
-- **Live evaluation progress** — SSE-powered real-time score stream as each test case completes
-- **Score breakdowns** — per-dimension scores + reasoning from each judge agent
-- **Prompt caching** — system prompts are cached across test cases (reduces API cost significantly on large datasets)
-- **Score distribution chart** — histogram of 0-10 scores per evaluation run
-- **Token tracking** — input/output/cache tokens logged per test case
-- **Latency tracking** — ms-precise response time per test case
+- **Prompt-Versionierung** — jede Änderung erzeugt eine neue Version, alte Versionen bleiben erhalten
+- **Datensatz-Verwaltung** — JSON-Testfälle mit Eingabe-Variablen und erwarteten Ausgaben
+- **Live-Evaluierungsfortschritt** — SSE-gestützter Echtzeit-Score-Stream für jeden Testfall
+- **Score-Aufschlüsselung** — dimensionsgenaue Scores + Begründung jedes Bewerter-Agenten
+- **Prompt-Caching** — System-Prompts werden über alle Testfälle hinweg gecacht (spart bis zu 80 % an Input-Tokens)
+- **Score-Verteilungsdiagramm** — Histogramm der 0–10-Scores pro Evaluierungslauf
+- **Token-Tracking** — Input/Output/Cache-Tokens je Testfall protokolliert
+- **Latenz-Tracking** — ms-genaue Antwortzeit je Testfall
 
-## Tech Stack
+## Technologie
 
-| Layer | Technology |
+| Ebene | Technologie |
 |---|---|
 | Backend | Python 3.12, Django 4.2, Django REST Framework |
 | Frontend | React 18, TypeScript, Vite 5 |
-| LLM | Anthropic Claude (configurable model per evaluation) |
-| Database | SQLite (zero-config, file-based) |
+| LLM | Anthropic Claude (Modell pro Evaluierung wählbar) |
+| Datenbank | SQLite (keine Konfiguration nötig) |
 | Streaming | Server-Sent Events (SSE) |
 
-## Setup
+## Installation
 
-**Requirements:** Python 3.10+, Node.js 18+, an Anthropic API key.
+**Voraussetzungen:** Python 3.10+, Node.js 18+, ein Anthropic API-Key.
 
 ```bash
 git clone https://github.com/ghostvenumai/logieval.git
 cd logieval
 
-# Set your API key
+# API-Key setzen
 export ANTHROPIC_API_KEY=sk-ant-...
 
-# Start everything (creates venv, installs deps, runs migrations)
+# Alles starten (erstellt venv, installiert Abhängigkeiten, führt Migrationen aus)
 ./start.sh
 ```
 
-Open `http://localhost:5173` in your browser.
+Öffne `http://localhost:5173` im Browser.
 
-The backend API runs at `http://localhost:8000/api/`.
+Die Backend-API läuft unter `http://localhost:8000/api/`.
 
-## Usage
+## Verwendung
 
-### 1. Create a Prompt
+### 1. Prompt erstellen
 
-Go to **Prompts** → New Prompt. Write a system prompt and a user message template. Use `{{variable_name}}` placeholders for dynamic values.
+Gehe zu **Prompts** → Neuer Prompt. Schreibe einen System-Prompt und eine Benutzer-Vorlage. Verwende `{{variablenname}}` als Platzhalter für dynamische Werte.
 
-Example system prompt:
+Beispiel System-Prompt:
 ```
-You are a logistics customer service assistant for FastFreight GmbH.
-Answer questions about shipment status, delivery times, and logistics processes.
-Be concise and accurate.
-```
-
-Example user template:
-```
-Customer question: {{question}}
-Shipment ID: {{shipment_id}}
+Du bist ein hilfreicher Kundenservice-Assistent für ein Logistikunternehmen.
+Beantworte Fragen kurz, präzise und freundlich auf Deutsch (Sie-Form).
 ```
 
-### 2. Create a Dataset
+Beispiel Benutzer-Vorlage:
+```
+Kundenfrage: {{frage}}
+```
 
-Go to **Datasets** → New Dataset. Add test cases as JSON:
+### 2. Datensatz erstellen
+
+Gehe zu **Datensätze** → Neuer Datensatz. Füge Testfälle als JSON hinzu:
 
 ```json
 {
   "input_variables": {
-    "question": "Where is my package?",
-    "shipment_id": "FF-2024-98765"
+    "frage": "Wo ist mein Paket?"
   },
-  "expected_output": "Your shipment FF-2024-98765 is currently in transit and expected to arrive within 2 business days."
+  "expected_output": "Ich schaue das gerne für Sie nach. Bitte nennen Sie mir Ihre Sendungsnummer."
 }
 ```
 
-### 3. Run an Evaluation
+### 3. Evaluierung starten
 
-Go to **Evaluations** → New Evaluation. Select a prompt version, a dataset, and the model to evaluate. Watch the live score stream as each test case completes.
+Gehe zu **Evaluierungen** → Neue Evaluierung. Wähle eine Prompt-Version, einen Datensatz und das zu testende Modell. Verfolge den Live-Score-Stream während die Testfälle abgearbeitet werden.
 
-### 4. Compare Results
+### 4. Ergebnisse vergleichen
 
-The Dashboard shows aggregate scores across all evaluations. Click into any evaluation for per-test-case breakdowns with individual judge reasoning.
+Das Dashboard zeigt aggregierte Scores aller Evaluierungen. Ein Klick auf eine Evaluierung öffnet die testfallgenaue Aufschlüsselung mit der Begründung jedes Bewerter-Agenten.
 
-## Project Structure
+### 5. Auto-Verbessern
+
+Nach Abschluss einer Evaluierung kann der **Auto-Verbesserungs-Agent** den Prompt automatisch analysieren und einen verbesserten Vorschlag generieren, der direkt als neue Version gespeichert werden kann.
+
+## Projektstruktur
 
 ```
 logieval/
 ├── backend/
 │   ├── apps/
-│   │   ├── evaluations/     # Evaluation model, runner, SSE views
-│   │   ├── prompts/         # Prompt + PromptVersion models
-│   │   └── datasets/        # Dataset + TestCase models
-│   ├── logieval/            # Django settings, URLs, WSGI
+│   │   ├── evaluations/     # Evaluierungs-Modell, Runner, SSE-Views
+│   │   ├── prompts/         # Prompt + PromptVersion-Modelle
+│   │   └── datasets/        # Dataset + TestCase-Modelle
+│   ├── logieval/            # Django-Einstellungen, URLs, WSGI
 │   ├── requirements.txt
 │   └── manage.py
 ├── frontend/
 │   ├── src/
-│   │   ├── pages/           # Dashboard, Prompts, Datasets, Evaluations
-│   │   ├── components/      # Shared UI components
-│   │   ├── api.ts           # Typed API client
+│   │   ├── pages/           # Dashboard, Prompts, Datensätze, Evaluierungen
+│   │   ├── components/      # Gemeinsame UI-Komponenten
+│   │   ├── api.ts           # Typisierter API-Client
 │   │   └── App.tsx
 │   └── package.json
-└── start.sh                 # One-command startup
+├── docs/screenshots/        # UI-Screenshots
+└── start.sh                 # Ein-Befehl-Start
 ```
 
 ## API
 
-The Django REST API is available at `http://localhost:8000/api/`:
+Die Django REST-API ist erreichbar unter `http://localhost:8000/api/`:
 
-| Endpoint | Method | Description |
+| Endpunkt | Methode | Beschreibung |
 |---|---|---|
-| `/api/prompts/` | GET, POST | List and create prompts |
-| `/api/prompts/{id}/versions/` | GET, POST | List and create prompt versions |
-| `/api/datasets/` | GET, POST | List and create datasets |
-| `/api/datasets/{id}/cases/` | GET, POST | List and add test cases |
-| `/api/evaluations/` | GET, POST | List and start evaluations |
-| `/api/evaluations/{id}/results/` | GET | Per-test-case results with scores |
-| `/api/evaluations/{id}/stream/` | GET (SSE) | Live progress stream |
+| `/api/prompts/` | GET, POST | Prompts auflisten und erstellen |
+| `/api/prompts/{id}/versions/` | GET, POST | Versionen auflisten und erstellen |
+| `/api/datasets/` | GET, POST | Datensätze auflisten und erstellen |
+| `/api/datasets/{id}/cases/` | GET, POST | Testfälle auflisten und hinzufügen |
+| `/api/evaluations/` | GET, POST | Evaluierungen auflisten und starten |
+| `/api/evaluations/{id}/results/` | GET | Testfall-Ergebnisse mit Scores |
+| `/api/evaluations/{id}/stream/` | GET (SSE) | Live-Fortschritts-Stream |
 
-## Configuration
+## Konfiguration
 
-The only required configuration is the Anthropic API key:
+Die einzige Pflichtangabe ist der Anthropic API-Key:
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-Or create `backend/.env`:
+Oder in `backend/.env` eintragen:
 ```
 ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-By default, evaluations use `claude-haiku-4-5` as the production model and `claude-haiku-4-5` as the judge. Both are configurable per evaluation run in the UI.
+Modell und Bewerter-Modell sind pro Evaluierungslauf frei wählbar.
 
-## License
+## Lizenz
 
 MIT
